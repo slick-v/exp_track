@@ -11,6 +11,7 @@ from schemas import LoginRequest, TokenResponse
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from auth import get_current_user
 
 
 app = FastAPI()
@@ -49,3 +50,11 @@ def login(credentials: LoginRequest, db: Session = Depends(get_db)):
 
     token = create_access_token(user.id)
     return TokenResponse(access_token=token)
+
+
+
+
+
+@app.get("/me", response_model=UserResponse)
+def read_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
