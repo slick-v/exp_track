@@ -12,11 +12,14 @@ from app.models import User
 from app.schemas import UserCreate, UserResponse, TokenResponse
 from app.services.auth_services import hash_password, verify_password, create_access_token
 from app.core.config import settings
+from app.services.onboarding_services import seed_defaults_for_user
 
 router = APIRouter()
 
 @router.post("/register", response_model=UserResponse)
-def register(user_in: UserCreate, db: Session = Depends(get_db)):
+def register(user_in: UserCreate, 
+            db: Session = Depends(get_db)):
+    
     new_user = User(
         email=user_in.email,
         hashed_password=hash_password(user_in.password),
@@ -29,6 +32,9 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=400, detail="Email already registered")
     db.refresh(new_user)
+
+    seed_defaults_for_user(db, new_user.id)
+    db.commit()
     return new_user
 
 @router.post("/login")

@@ -23,9 +23,9 @@ import sys, os
 sys.path.append(os.getcwd())
 # import
 
-from backend.app.core.config import settings
-from backend.app.core.database import Base
-from backend.app.models import User
+from app.core.config import settings
+from app.core.database import Base
+from app.models import User
 
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 target_metadata = Base.metadata
