@@ -1,5 +1,5 @@
 import psycopg2
-from config import settings
+from backend.app.core.config import settings
 
 
 conn = psycopg2.connect(settings.DATABASE_URL)

@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 
 from datetime import datetime, timedelta, timezone
 from jose import jwt
-from config import settings
+from backend.app.core.config import settings
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -10,8 +10,8 @@ from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 # from config import settings
-from database import get_db
-from models import User
+from backend.app.core.database import get_db
+from backend.app.models import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
