@@ -100,3 +100,12 @@ class IncomeResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+
+class DashboardSummary(BaseModel):
+    total_income: Decimal
+    total_expenses: Decimal
+    current_balance: Decimal
+    month_income: Decimal
+    month_expenses: Decimal
