@@ -19,6 +19,7 @@ class User(Base):
     categories = relationship("Category", back_populates="owner")
     accounts = relationship("Account", back_populates="owner")
     expenses = relationship("Expense", back_populates="owner")
+    income_entries = relationship("Income", back_populates="owner")
 
 
 
@@ -66,7 +67,28 @@ class Expense(Base):
     tags = Column(String, nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
 
     owner = relationship("User", back_populates="expenses")
     category = relationship("Category")
+    account = relationship("Account")
+
+
+
+class Income(Base):
+    __tablename__ = "income"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False, index=True)
+
+    amount = Column(Numeric(12, 2), nullable=False)
+    source = Column(String, nullable=True)
+    income_date = Column(Date, nullable=False, index=True)
+    notes = Column(Text, nullable=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    owner = relationship("User", back_populates="income_entries")
     account = relationship("Account")

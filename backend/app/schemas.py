@@ -78,3 +78,25 @@ class ExpenseResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+
+
+class IncomeCreate(BaseModel):
+    amount: Decimal
+    account_id: int
+    source: str | None = None
+    income_date: date
+    notes: str | None = None
+
+class IncomeResponse(BaseModel):
+    id: int
+    amount: Decimal
+    account_id: int
+    source: str | None
+    income_date: date
+    notes: str | None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
