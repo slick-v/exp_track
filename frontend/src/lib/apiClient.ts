@@ -19,3 +19,16 @@ export async function apiPost<TResponse>(
 
   return res.json();
 }
+
+export async function apiGet<TResponse>(path: string): Promise<TResponse> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData?.detail || `Request failed: ${res.status}`);
+  }
+
+  return res.json();
+}

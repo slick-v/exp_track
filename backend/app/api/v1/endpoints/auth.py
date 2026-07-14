@@ -31,7 +31,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login")
 def login(
     response:Response,
     form_data: OAuth2PasswordRequestForm = Depends(), 

@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { loginSchema, LoginFormValues } from "./schema";
+import { loginSchema } from "./schema";
+import type { LoginFormValues } from "./schema";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
