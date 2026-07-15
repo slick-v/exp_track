@@ -131,3 +131,23 @@ class BudgetStatus(BaseModel):
     remaining: Decimal
     percent_used: float
     is_over_budget: bool
+
+
+class GoalCreate(BaseModel):
+    name: str
+    target_amount: Decimal
+    target_date: date | None = None
+
+class GoalContribution(BaseModel):
+    amount: Decimal
+
+class GoalResponse(BaseModel):
+    id: int
+    name: str
+    target_amount: Decimal
+    current_amount: Decimal
+    target_date: date | None
+    percent_complete: float
+
+    class Config:
+        from_attributes = True

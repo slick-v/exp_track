@@ -22,6 +22,7 @@ class User(Base):
     expenses = relationship("Expense", back_populates="owner")
     income_entries = relationship("Income", back_populates="owner")
     budgets = relationship("Budget", back_populates="owner")
+    goals = relationship("Goal", back_populates="owner")
 
 
 
@@ -116,3 +117,19 @@ class Budget(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "category_id", "month", name="uq_budget_user_category_month"),
     )
+
+
+class Goal(Base):
+    __tablename__ = "goals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
+    name = Column(String, nullable=False)
+    target_amount = Column(Numeric(12, 2), nullable=False)
+    current_amount = Column(Numeric(12, 2), nullable=False, default=0)
+    target_date = Column(Date, nullable=True)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    owner = relationship("User", back_populates="goals")
