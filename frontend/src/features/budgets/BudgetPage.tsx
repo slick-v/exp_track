@@ -1,6 +1,6 @@
 import { useBudgetStatus } from "./useBudgetStatus";
 import { useCategories } from "../categories/useCategories";
-import BudgetProgressCard from "./BudgetProgressCard";
+import BudgetProgressCard from "./BudgetprogressCard"
 
 function getCurrentMonthISO(): string {
   const now = new Date();

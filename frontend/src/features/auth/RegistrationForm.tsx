@@ -34,7 +34,10 @@ export default function RegisterForm() {
   }
 
   if (success) {
-    return <p className="text-green-600">Account created — you can now log in.</p>;
+    return ( <div className="text-center">
+      <p className="text-green-600 mb-2">Account created — you can now log in.</p>
+      <a href="/login" className="text-sm underline">Go to login</a>
+    </div>)
   }
 
   return (
