@@ -8,10 +8,11 @@ from sqlalchemy.exc import IntegrityError
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
+from app.core.config import settings
+
 from app.models import User
 from app.schemas import UserCreate, UserResponse, TokenResponse
 from app.services.auth_services import hash_password, verify_password, create_access_token
-from app.core.config import settings
 from app.services.onboarding_services import seed_defaults_for_user
 
 router = APIRouter()
@@ -39,25 +40,26 @@ def register(user_in: UserCreate,
 
 @router.post("/login")
 def login(
-    response:Response,
-    form_data: OAuth2PasswordRequestForm = Depends(), 
-    db: Session = Depends(get_db)):
-
+    response: Response,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
+
     token = create_access_token(user.id)
 
     response.set_cookie(
-        key = "access_token",
-        value = token,
+        key="access_token",
+        value=token,
         httponly=True,
-        secure = settings.ENVIRONMENT == "production"
-        samesite = "none" if settings.ENVIRONMENT == "production"
-        max_age = settings.JWT_EXPIRE_MINUTES * 60
+        secure=settings.ENVIRONMENT == "production",
+        samesite="none" if settings.ENVIRONMENT == "production" else "lax",
+        max_age=settings.JWT_EXPIRE_MINUTES * 60,
     )
-    return {"message": "Login succesfull"}
 
+    return {"message": "Login successful"}
 
 
 @router.post("/logout")
