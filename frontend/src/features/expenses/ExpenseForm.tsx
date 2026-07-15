@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { expenseFormSchema, ExpenseFormValues } from "./expenseSchema";
+import type { expenseFormSchema, ExpenseFormValues } from "./expenseSchema";
 import { useCategories } from "../categories/useCategories";
 import { useAccounts } from "../accounts/useAccounts";
-import { Expense } from "./useExpenses";
+import type { Expense } from "./useExpenses";
 
 type Props = {
   initialValues?: Expense;

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import VoiceExpenseEntry from "./features/ai/VoiceExpenseEntry";
 import { useQueryClient } from "@tanstack/react-query";
 
-import ExpensesPage from "./features/expenses/ExpensesPage";
+import ExpensesPage from "./features/expenses/ExpensePage";
 import IncomePage from "./features/income/IncomePage";
 
 function LoginPage() {

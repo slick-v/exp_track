@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAccounts } from "../accounts/useAccounts";
-import { Income } from "./useIncome";
+import type { Income } from "./useIncome";
 
 const incomeFormSchema = z.object({
   amount: z.coerce.number().positive("Amount must be greater than 0"),

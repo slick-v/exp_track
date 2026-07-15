@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useExpenses, useCreateExpense, useUpdateExpense, useDeleteExpense, Expense } from "./useExpenses";
+import { useExpenses, useCreateExpense, useUpdateExpense, useDeleteExpense, } from "./useExpenses";
+import type { Expense } from "./useExpenses";
 import { useCategories } from "../categories/useCategories";
 import ExpenseForm from "./ExpenseForm";
 import { formatCurrency } from "../../shared/formatCurrency";
-import { ExpenseFormValues } from "./expenseSchema";
+import { type ExpenseFormValues } from "./expenseSchema";
 
 export default function ExpensesPage() {
   const { data: expenses, isLoading } = useExpenses();

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { useIncome, useCreateIncome, useUpdateIncome, useDeleteIncome, Income } from "./useIncome";
-import IncomeForm, { IncomeFormValues } from "./IncomeForm";
+import { useIncome, useCreateIncome, useUpdateIncome, useDeleteIncome,} from "./useIncome";
+import type { Income } from "./useIncome";
+import IncomeForm from "./IncomeForm";
+import type { IncomeFormValues } from "./IncomeForm";
 import { formatCurrency } from "../../shared/formatCurrency";
 
 export default function IncomePage() {
