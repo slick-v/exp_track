@@ -109,3 +109,25 @@ class DashboardSummary(BaseModel):
     current_balance: Decimal
     month_income: Decimal
     month_expenses: Decimal
+
+
+class BudgetCreate(BaseModel):
+    category_id: int | None = None
+    month: date
+    limit_amount: Decimal
+
+class BudgetResponse(BaseModel):
+    id: int
+    category_id: int | None
+    month: date
+    limit_amount: Decimal
+
+    class Config:
+        from_attributes = True
+
+class BudgetStatus(BaseModel):
+    budget: BudgetResponse
+    spent: Decimal
+    remaining: Decimal
+    percent_used: float
+    is_over_budget: bool

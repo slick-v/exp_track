@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 from sqlalchemy import Numeric, Text, Date
+from sqlalchemy import UniqueConstraint
 
 
 
@@ -20,6 +21,7 @@ class User(Base):
     accounts = relationship("Account", back_populates="owner")
     expenses = relationship("Expense", back_populates="owner")
     income_entries = relationship("Income", back_populates="owner")
+    budgets = relationship("Budget", back_populates="owner")
 
 
 
@@ -92,3 +94,25 @@ class Income(Base):
 
     owner = relationship("User", back_populates="income_entries")
     account = relationship("Account")
+
+
+
+
+class Budget(Base):
+    __tablename__ = "budgets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True, index=True)
+
+    month = Column(Date, nullable=False)  # always stored as the 1st of the month
+    limit_amount = Column(Numeric(12, 2), nullable=False)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    owner = relationship("User", back_populates="budgets")
+    category = relationship("Category")
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "category_id", "month", name="uq_budget_user_category_month"),
+    )
