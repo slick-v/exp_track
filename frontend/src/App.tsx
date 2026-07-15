@@ -7,6 +7,8 @@ import DashboardPage from "./features/dashboard/DashboardPage";
 import BudgetsPage from "./features/budgets/BudgetPage";
 import GoalsPage from "./features/goals/GoalPage"
 import { useNavigate } from "react-router-dom";
+import VoiceExpenseEntry from "./features/ai/VoiceExpenseEntry";
+import { useQueryClient } from "@tanstack/react-query";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/budgets" element={<BudgetsPage />} />
             <Route path="/goals" element={<GoalsPage />} />
+            <Route path="/voice-entry" element={<VoiceEntryPage />} />
           </Route>
         </Route>
       </Routes>
@@ -32,4 +35,18 @@ function App() {
   );
 }
 
+
+function VoiceEntryPage() {
+  const queryClient = useQueryClient();
+  return (
+    <div className="p-6">
+      <VoiceExpenseEntry
+        onSaved={() => {
+          queryClient.invalidateQueries({ queryKey: ["dashboardSummary"] });
+          queryClient.invalidateQueries({ queryKey: ["budgetStatus"] });
+        }}
+      />
+    </div>
+  );
+}
 export default App;

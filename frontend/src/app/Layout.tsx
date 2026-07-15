@@ -15,6 +15,7 @@ export default function Layout() {
           <NavLink to="/" end className={linkClass}>Dashboard</NavLink>
           <NavLink to="/budgets" className={linkClass}>Budgets</NavLink>
           <NavLink to="/goals" className={linkClass}>Goals</NavLink>
+            <NavLink to="/voice-entry" className={linkClass}>🎤 Voice Entry</NavLink>
           <button onClick={() => logout.mutate()} className="text-slate-500 underline">
             Log out
           </button>
