@@ -151,3 +151,15 @@ class GoalResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+
+class VoiceExpensePreviewItem(BaseModel):
+    amount: Decimal
+    category_guess: str
+    matched_category_id: int | None
+    merchant: str | None
+
+class VoiceExpensePreview(BaseModel):
+    transcript: str
+    items: list[VoiceExpensePreviewItem]
