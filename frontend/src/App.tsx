@@ -1,7 +1,9 @@
+import { useState } from "react";
 import RegisterForm from "./features/auth/RegistrationForm";
 import LoginForm from "./features/auth/LoginForm";
-import { useState } from "react";
+
 import { useCurrentUser, useLogout } from "./features/auth/useCurrentUser";
+import DashboardPage from "./features/dashboard/DashboardPage";
 
 
 
@@ -10,23 +12,20 @@ function App() {
   const { data: user, isLoading, refetch } = useCurrentUser();
   const logout = useLogout();
 
-   if (isLoading) {
+  if (isLoading) {
     return <p className="text-center py-20">Loading…</p>;
   }
 
   if (user) {
     return (
-      <div className="min-h-screen bg-slate-50 text-center py-20">
-        <h1 className="text-3xl font-bold text-slate-800 mb-4">Expense Tracker</h1>
-        <p className="text-green-600">Logged in as {user.email}</p>
-
-         <button
-          onClick={() => logout.mutate()}
-          disabled={logout.isPending}
-          className="text-sm underline text-slate-600"
-        >
-        {logout.isPending ? "Logging out…" : "Log out"}
-        </button>
+      <div className="min-h-screen bg-slate-100">
+        <header className="bg-white shadow px-6 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-slate-800">Expense Tracker</h1>
+          <button onClick={() => logout.mutate()} className="text-sm underline text-slate-600">
+            Log out
+          </button>
+        </header>
+        <DashboardPage />
       </div>
     );
   }
@@ -48,10 +47,10 @@ function App() {
       </div>
 
       {view === "register" && <RegisterForm />}
-      {view === "login" && <LoginForm onLoginSuccess={() => setView("loggedIn")} />}
-      {view === "loggedIn" && (
-      <p className="text-center text-green-600">You're logged in! Cookie is set.</p>
-      )}
+      {view === "login" && <LoginForm onLoginSuccess={() => refetch()} />}
+      {/* {view === "loggedIn" && (
+      // <p className="text-center text-green-600">You're logged in! Cookie is set.</p>
+      )} */}
     </div>
   );
 }
