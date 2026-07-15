@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useVoiceRecorder } from "./useVoiceRecorder";
-import { apiPostFormData, apiPost } from "../../lib/apiClient";
+import { apiPostFormData, apiPost, apiGet } from "../../lib/apiClient";
 import { formatCurrency } from "../../shared/formatCurrency";
 
 type PreviewItem = {
@@ -15,12 +15,30 @@ type PreviewResponse = {
   items: PreviewItem[];
 };
 
+type Account = {
+  id: number;
+  name: string;
+  account_type: string;
+};
+
 export default function VoiceExpenseEntry({ onSaved }: { onSaved: () => void }) {
   const { state, audioBlob, errorMessage, startRecording, stopRecording, reset } = useVoiceRecorder();
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processError, setProcessError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  // NEW: state for the account dropdown
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
+
+  // NEW: fetch the user's accounts once, when this component first loads
+  useEffect(() => {
+    apiGet<Account[]>("/api/v1/accounts").then((data) => {
+      setAccounts(data);
+      if (data.length > 0) setSelectedAccountId(data[0].id); // default to the first one
+    });
+  }, []);
 
   async function handleProcess() {
     if (!audioBlob) return;
@@ -41,16 +59,21 @@ export default function VoiceExpenseEntry({ onSaved }: { onSaved: () => void }) 
   }
 
   async function handleConfirmSave() {
-    if (!preview) return;
+    if (!preview || !selectedAccountId) return; // guard: don't save with no account picked
     setIsSaving(true);
+    setProcessError(null);
 
     try {
+      let skippedCount = 0;
       for (const item of preview.items) {
-        if (!item.matched_category_id) continue; // skip items with no matched category — needs manual entry
+        if (!item.matched_category_id) {
+          skippedCount++;
+          continue;
+        }
         await apiPost("/api/v1/expenses", {
           amount: item.amount,
           category_id: item.matched_category_id,
-          account_id: 1, // TODO: let user pick account instead of hardcoding
+          account_id: selectedAccountId, // CHANGED: was hardcoded to 1, now uses the dropdown's value
           merchant: item.merchant,
           expense_date: new Date().toISOString().split("T")[0],
         });
@@ -58,6 +81,9 @@ export default function VoiceExpenseEntry({ onSaved }: { onSaved: () => void }) 
       setPreview(null);
       reset();
       onSaved();
+      if (skippedCount > 0) {
+        setProcessError(`${skippedCount} item(s) skipped — no matching category found`);
+      }
     } catch (err) {
       setProcessError("Failed to save one or more expenses");
     } finally {
@@ -69,6 +95,22 @@ export default function VoiceExpenseEntry({ onSaved }: { onSaved: () => void }) 
     return (
       <div className="max-w-md mx-auto bg-white rounded-lg shadow p-6 space-y-4">
         <p className="text-sm text-slate-500 italic">"{preview.transcript}"</p>
+
+        {/* NEW: the account dropdown */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Save to account</label>
+          <select
+            value={selectedAccountId ?? ""}
+            onChange={(e) => setSelectedAccountId(Number(e.target.value))}
+            className="w-full border rounded px-3 py-2"
+          >
+            {accounts.map((acc) => (
+              <option key={acc.id} value={acc.id}>
+                {acc.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div className="space-y-2">
           {preview.items.map((item, i) => (
@@ -91,7 +133,7 @@ export default function VoiceExpenseEntry({ onSaved }: { onSaved: () => void }) 
         <div className="flex gap-2">
           <button
             onClick={handleConfirmSave}
-            disabled={isSaving}
+            disabled={isSaving || !selectedAccountId}
             className="flex-1 bg-slate-800 text-white rounded py-2 disabled:opacity-50"
           >
             {isSaving ? "Saving…" : "Confirm & Save"}

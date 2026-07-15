@@ -10,6 +10,9 @@ import { useNavigate } from "react-router-dom";
 import VoiceExpenseEntry from "./features/ai/VoiceExpenseEntry";
 import { useQueryClient } from "@tanstack/react-query";
 
+import ExpensesPage from "./features/expenses/ExpensesPage";
+import IncomePage from "./features/income/IncomePage";
+
 function LoginPage() {
   const navigate = useNavigate();
   return <LoginForm onLoginSuccess={() => navigate("/")} />;
@@ -28,6 +31,8 @@ function App() {
             <Route path="/budgets" element={<BudgetsPage />} />
             <Route path="/goals" element={<GoalsPage />} />
             <Route path="/voice-entry" element={<VoiceEntryPage />} />
+            <Route path="/expenses" element={<ExpensesPage />} />
+            <Route path="/income" element={<IncomePage />} />
           </Route>
         </Route>
       </Routes>
