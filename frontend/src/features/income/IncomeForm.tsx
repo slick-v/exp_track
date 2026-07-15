@@ -1,5 +1,8 @@
+// import { useForm, Resolver } from "react-hook-form";
 import { useForm } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { z } from "zod";
 import { useAccounts } from "../accounts/useAccounts";
 import type { Income } from "./useIncome";
@@ -25,7 +28,7 @@ export default function IncomeForm({ initialValues, onSubmit, isSubmitting, onCa
   const { data: accounts } = useAccounts();
 
   const { register, handleSubmit, formState: { errors } } = useForm<IncomeFormValues>({
-    resolver: zodResolver(incomeFormSchema),
+    resolver: zodResolver(incomeFormSchema) as Resolver<IncomeFormValues>,
     defaultValues: initialValues
       ? {
           amount: parseFloat(initialValues.amount),
@@ -41,12 +44,12 @@ export default function IncomeForm({ initialValues, onSubmit, isSubmitting, onCa
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
         <label className="block text-sm font-medium">Amount</label>
-        <input {...register("amount")} type="number" step="0.01" className="mt-1 w-full border rounded px-3 py-2" />
+        <input {...register("amount", { valueAsNumber: true })} type="number" step="0.01" className="mt-1 w-full border rounded px-3 py-2" />
         {errors.amount && <p className="text-red-500 text-sm">{errors.amount.message}</p>}
       </div>
       <div>
         <label className="block text-sm font-medium">Account</label>
-        <select {...register("account_id")} className="mt-1 w-full border rounded px-3 py-2">
+        <select {...register("account_id", { valueAsNumber: true })} className="mt-1 w-full border rounded px-3 py-2">
           <option value="">Select…</option>
           {accounts?.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
         </select>

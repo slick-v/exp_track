@@ -47,7 +47,7 @@ export default function DashboardPage() {
                 <Cell key={index} fill={COLORS[index]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => formatCurrency(value)} />
+            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
           </PieChart>
         </ResponsiveContainer>
       </div>
